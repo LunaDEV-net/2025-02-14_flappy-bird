@@ -1,10 +1,13 @@
 input.onButtonEvent(Button.A, input.buttonEventClick(), function () {
+    x_old = x_time
+    y_old = y_time
     Punkte = 0
     bird_cur = 2
     basic.clearScreen()
     basic.turnRgbLedOff()
     bird_old = bird_cur
     running = true
+    list = []
 })
 function gen_pip () {
     Punkte += 1
@@ -34,6 +37,14 @@ let list: number[] = []
 let bird_cur = 0
 let running = false
 let Punkte = 0
+let y_old = 0
+let x_old = 0
+let y_time = 0
+let x_time = 0
+x_time = 750
+y_time = 750
+x_old = x_time
+y_old = y_time
 Punkte = 0
 running = true
 basic.turnRgbLedOff()
@@ -47,13 +58,6 @@ list = [
 ]
 hoehe_y = 0
 bird_old = bird_cur
-loops.everyInterval(1000, function () {
-    if (running) {
-        if (bird_cur < 4) {
-            bird_cur += 1
-        }
-    }
-})
 basic.forever(function () {
     if (running) {
         led.unplot(1, bird_old)
@@ -74,7 +78,7 @@ basic.forever(function () {
         basic.showNumber(Punkte)
     }
 })
-loops.everyInterval(1000, function () {
+loops.everyInterval(x_time, function () {
     if (running) {
         for (let Wert of list) {
             led.unplot(pipes_x, Wert)
@@ -86,6 +90,15 @@ loops.everyInterval(1000, function () {
             }
         } else {
             gen_pip()
+            x_time = x_old - 15 * Punkte
+            y_time = x_old - 15 * Punkte
+        }
+    }
+})
+loops.everyInterval(y_time, function () {
+    if (running) {
+        if (bird_cur < 4) {
+            bird_cur += 1
         }
     }
 })
