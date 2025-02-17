@@ -9,21 +9,23 @@ function gen_pip () {
     hoehe_y = randint(1, 4)
     list.removeAt(list.indexOf(hoehe_y))
     list.removeAt(list.indexOf(hoehe_y - 1))
-    pipes.push([5, list])
+    pipes_x = 4
 }
 input.onButtonEvent(Button.B, input.buttonEventClick(), function () {
-    if (bird_cur > 0) {
-        bird_cur += -1
+    if (running) {
+        if (bird_cur > 0) {
+            bird_cur += -1
+        }
     }
 })
+let pipes_x = 0
 let hoehe_y = 0
 let list: number[] = []
-let pipes: number[][] = []
 let bird_cur = 0
-let dis_to_last = 0
+let running = false
+running = true
+basic.turnRgbLedOff()
 bird_cur = 2
-let bird_old = bird_cur
-pipes = []
 list = [
 0,
 1,
@@ -32,18 +34,47 @@ list = [
 4
 ]
 hoehe_y = 0
+let bird_old = bird_cur
 loops.everyInterval(1000, function () {
-    if (3 == dis_to_last) {
-        gen_pip()
-    }
-})
-loops.everyInterval(500, function () {
-    if (bird_cur < 4) {
-        bird_cur += 1
+    if (running) {
+        if (bird_cur < 4) {
+            bird_cur += 1
+        }
     }
 })
 basic.forever(function () {
-    led.unplot(1, bird_old)
-    led.plot(1, bird_cur)
-    bird_old = bird_cur
+    if (running) {
+        led.unplot(1, bird_old)
+        for (let Wert of list) {
+            led.plot(pipes_x, Wert)
+        }
+        led.plot(1, bird_cur)
+        bird_old = bird_cur
+        if (pipes_x == 1) {
+            for (let Wert of list) {
+                if (Wert == bird_cur) {
+                    basic.setLedColor(0xff0000)
+                }
+            }
+        }
+    } else {
+    	
+    }
+})
+loops.everyInterval(1000, function () {
+    if (running) {
+        for (let Wert of list) {
+            led.unplot(pipes_x, Wert)
+        }
+        if (pipes_x > 0) {
+            pipes_x += -1
+            for (let Wert of list) {
+                led.plot(pipes_x, Wert)
+            }
+        } else {
+            gen_pip()
+        }
+    } else {
+    	
+    }
 })
